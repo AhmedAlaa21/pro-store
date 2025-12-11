@@ -1,6 +1,4 @@
-import { IProduct } from "@/lib/types/product";
-
-const sampleData: { products: IProduct[] } = {
+const sampleData = {
   products: [
     {
       name: "Polo Sporting Stretch Shirt",
