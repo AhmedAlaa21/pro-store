@@ -1,10 +1,10 @@
 import Link from "next/link";
 import Image from "next/image";
-import { IProduct } from "@/lib/types/product";
+import { TProduct } from "@/lib/types/product";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import ProductPrice from "./product-price";
 
-const ProductCard = ({ product }: { product: IProduct }) => {
+const ProductCard = ({ product }: { product: TProduct }) => {
   return (
     <Card className="w-full max-w-sm border-0">
       <CardHeader className="p-0 items-center">

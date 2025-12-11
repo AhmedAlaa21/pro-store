@@ -1,6 +1,4 @@
-import { IProduct } from "@/lib/types/product";
-
-const sampleData: { products: IProduct[] } = {
+const sampleData = {
   products: [
     {
       name: "Polo Sporting Stretch Shirt",
@@ -11,7 +9,7 @@ const sampleData: { products: IProduct[] } = {
         "/images/sample-products/p1-1.jpg",
         "/images/sample-products/p1-2.jpg",
       ],
-      price: 59.99,
+      price: 66.99,
       brand: "Polo",
       rating: 4.5,
       numReviews: 10,
