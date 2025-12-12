@@ -4,16 +4,11 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { compareSync } from "bcrypt-ts-edge";
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
+const config = {
   adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
-      // The name to display on the sign in form (e.g. "Sign in with...")
       name: "Credentials",
-      // `credentials` is used to generate a form on the sign in page.
-      // You can specify which fields should be submitted, by adding keys to the `credentials` object.
-      // e.g. domain, username, password, 2FA token, etc.
-      // You can pass any HTML attribute to the <input> tag through the object.
       credentials: {
         email: { type: "email" },
         password: { type: "password" },
@@ -47,4 +42,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     }),
   ],
-});
+};
+
+// NextAuth v4 returns a single handler; expose GET/POST for App Router.
+const handler = NextAuth(config);
+export const handlers = { GET: handler, POST: handler };
+export const { signIn, signOut, auth } = handler;
