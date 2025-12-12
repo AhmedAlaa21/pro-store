@@ -23,6 +23,9 @@ async function main() {
     await prisma.user.createMany({
       data: sampleData.users,
     });
+    await prisma.product.createMany({
+      data: sampleData.products,
+    });
 
     console.log("Data seeded successfully.");
   } catch (error) {

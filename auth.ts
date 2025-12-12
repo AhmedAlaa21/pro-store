@@ -1,60 +1,50 @@
 import NextAuth from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
-import { PrismaAdapter } from "@auth/prisma-adapter";
 import prisma from "./lib/prisma";
-import { compare } from "bcrypt-ts-edge";
+import { PrismaAdapter } from "@auth/prisma-adapter";
+import CredentialsProvider from "next-auth/providers/credentials";
+import { compareSync } from "bcrypt-ts-edge";
 
-export const config = {
-  pages: {
-    signIn: "/signin",
-    error: "/signin",
-  },
-  session: {
-    strategy: "jwt" as const,
-    maxAge: 30 * 24 * 60 * 60,
-  },
+export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
+      // The name to display on the sign in form (e.g. "Sign in with...")
       name: "Credentials",
+      // `credentials` is used to generate a form on the sign in page.
+      // You can specify which fields should be submitted, by adding keys to the `credentials` object.
+      // e.g. domain, username, password, 2FA token, etc.
+      // You can pass any HTML attribute to the <input> tag through the object.
       credentials: {
-        email: { type: "email", label: "Email" },
-        password: { type: "password", label: "Password" },
+        email: { type: "email" },
+        password: { type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          return null;
-        }
+        if (!credentials) return null;
 
-        // Find user in db
         const user = await prisma.user.findFirst({
           where: {
-            email: credentials.email as string,
+            email: credentials.email,
           },
         });
 
-        // Check if user exists and if the password matches
         if (user && user.password) {
-          const isMatch = await compare(
+          const isMatch = await compareSync(
             credentials.password as string,
             user.password
           );
 
-          // If password is correct, return user
-          if (isMatch) {
+          if (isMatch)
             return {
               id: user.id,
               name: user.name,
               email: user.email,
               role: user.role,
             };
-          }
         }
         // If user does not exist or password does not match return null
+
         return null;
       },
     }),
   ],
-};
-
-export const { handlers, auth, signIn, signOut } = NextAuth(config);
+});
